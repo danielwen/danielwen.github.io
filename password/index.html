@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width initial-scale=1"/>
+<title>Password generator with entropy</title>
+<meta name="author" content="Daniel Wen"/>
+<meta name="description" content="Generate random characters/words and calculate randomness"/>
+<link rel="canonical" href="http://localhost:4000/password/"/>
+<link rel="icon" href="/favicon.ico"/>
+<link href="//fonts.googleapis.com/css?family=Oxygen:300" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="/assets/main.css"/>
+<script src="/assets/main.js"></script>
+</head>
+
+<body>
+
+<div id="flex-ancestor">
+<div id="site-wrapper">
+<header id="site-header">
+<div id="site-title">
+<div id="site-logo"></div>
+<a href="/">Lane Widen</a>
+<p>A Permutation of <a href="/about/" class="subtle">Daniel Wen</a></p>
+</div>
+<!--<div id="site-tags">
+<p>Browse by tag</p>
+<ul>
+<li><a href="/tag/design/">design</a></li>
+<li><a href="/tag/programming/">programming</a></li>
+<li><a href="/tag/musings/">musings</a></li>
+<li><a href="/tag/math/">math</a></li>
+</ul>
+</div>-->
+</header>
+
+<div id="page-content" class="visible">
+<div>
+<article class="post-content">
+<header class="post-header">
+<h1 class="post-title">Password generator with entropy</h1>
+<h2 class="post-subtitle">Generate random characters/words and calculate randomness</h2>
+<p class="post-meta"><time datetime='2015-09-03' pubdate>September 3, 2015</time></p>
+</header>
+<p><em>To my friend Paul Toner</em></p>
+
+<p>This tool generates random characters or words. It shows the entropy of the generated string, which is the number of distinct strings of given length and character set. The greater the entropy, the stronger the password.</p>
+
+<p>According to <a href="https://xkcd.com/936/" target="_blank">this xkcd comic</a>, a password composed of random common words is memorable yet has sufficient entropy to be strong.</p>
+
+<style>
+#app-chars-output, #app-words-output {
+width: 300px;
+}
+#app-chars-length, #app-words-length {
+width: 40px;
+}
+#app-chars-error, #app-words-error {
+margin-left: 10px;
+}
+#app table {
+padding-left: 10px;
+}
+</style>
+
+<div id="app">
+<h3>Random characters</h3>
+<p>Character set</p>
+<table><tr>
+<td><label for="app-chars-lower">Lowercase (a-z)</label></td>
+<td><input id="app-chars-lower" type="checkbox" checked="" /></td>
+</tr><tr>
+<td><label for="app-chars-upper">Uppercase (A-Z)</label></td>
+<td><input id="app-chars-upper" type="checkbox" checked="" /></td>
+</tr><tr>
+<td><label for="app-chars-digits">Numerals (0-9)</label></td>
+<td><input id="app-chars-digits" type="checkbox" checked="" /></td>
+</tr><tr>
+<td><label for="app-chars-punctuation">Symbols (all the rest)</label></td>
+<td><input id="app-chars-punctuation" type="checkbox" /></td>
+</tr></table>
+<p><label>Number of characters: <input id="app-chars-length" type="number" value="12" /></label></p>
+<p><button id="app-chars-button">Regenerate</button><span id="app-chars-error"></span></p>
+<p><label>Result: <input id="app-chars-output" type="text" readonly="" /></label></p>
+<p>Randomness: <span id="app-chars-randomness"></span></p>
+<h3>Common words</h3>
+<p>Dictionary size</p>
+<table><tr>
+<td><label for="app-words-large">Common words (4096 words)</label></td>
+<td><input id="app-words-large" type="radio" name="app-words-size" checked="" /></td>
+</tr><tr>
+<td><label for="app-words-small">Very common words (2048 words)</label></td>
+<td><input id="app-words-small" type="radio" name="app-words-size" /></td>
+</tr></table>
+<p><label>Number of words: <input id="app-words-length" type="number" value="4" /></label></p>
+<p><button id="app-words-button">Regenerate</button><span id="app-words-error"></span></p>
+<p><label>Result: <input id="app-words-output" type="text" readonly="" /></label></p>
+<p>Randomness: <span id="app-words-randomness"></span></p>
+</div>
+
+<script>
+"use strict";
+
+var App = {};
+
+App.PasswordGenerator = function () {
+var ascii = {
+lowercase : "abcdefghijklmnopqrstuvwxyz",
+uppercase : "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+digits : "0123456789",
+punctuation : " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+};
+function generateCharsPassword(charTypes, passwordLength) {
+var charPool = "", password = "";
+for (var i = 0; i < charTypes.length; i++) {
+charPool += ascii[charTypes[i]];
+}
+for (var i = 0; i < passwordLength; i++) {
+var index = Math.floor(Math.random()*charPool.length);
+password += charPool.charAt(index);
+}
+var entropy = round(Math.log(Math.pow(charPool.length, passwordLength))/Math.log(2), 2);
+return {
+result : password,
+randomness : charPool.length + "<sup>" + passwordLength + "</sup> = 2<sup>" + entropy + "</sup>"
+};
+}
+
+var words = [];
+function generateWordsPassword(dictSize, numberOfWords) {
+var wordsLeft = numberOfWords;
+var password = [];
+while (wordsLeft > 0) {
+var wordIndex = Math.floor(Math.random() * dictSize);
+var word = words[wordIndex];
+if (password.indexOf(word) === -1) {
+password.push(word);
+wordsLeft--;
+}
+}
+var entropy = round(Math.log(Math.pow(dictSize, numberOfWords))/Math.log(2), 2);
+return {
+result : password.join(" "),
+randomness : dictSize + "<sup>" + numberOfWords + "</sup> = 2<sup>" + entropy + "</sup>"
+};
+}
+
+function displayCharsPassword() {
+var passwordLength = parseFloat(id("app-chars-length").value);
+var charTypes = [];
+if (id("app-chars-upper").checked) charTypes.push("uppercase");
+if (id("app-chars-lower").checked) charTypes.push("lowercase");
+if (id("app-chars-digits").checked) charTypes.push("digits");
+if (id("app-chars-punctuation").checked) charTypes.push("punctuation");
+
+if (!isInt(passwordLength) || passwordLength <= 0) {
+id("app-chars-error").innerHTML = "Number of characters must be a positive integer.";
+} else if (charTypes.length === 0) {
+id("app-chars-error").innerHTML = "At least one type of character must be selected from the character set.";
+} else {
+id("app-chars-error").innerHTML = "";
+}
+if (id("app-chars-error").innerHTML !== "") return false;
+
+var output = generateCharsPassword(charTypes, passwordLength);
+id("app-chars-output").value = output.result;
+id("app-chars-randomness").innerHTML = output.randomness;
+}
+
+function initWords(req) {
+if (req && req.responseText) {
+words = req.responseText.split(",");
+displayWordsPassword();
+}
+}
+function displayWordsPassword() {
+var dictSize = (id("app-words-large").checked) ? 4096 : 2048;
+var numberOfWords = parseFloat(id("app-words-length").value);
+if (!isInt(numberOfWords) || numberOfWords <= 0) {
+id("app-words-error").innerHTML = "Number of words must be a positive integer.";
+} else if (words.length === 0) {
+id("app-words-error").innerHTML = "Unable to load dictionary."
+} else {
+id("app-words-error").innerHTML = "";
+}
+if (id("app-words-error").innerHTML !== "") return false;
+
+var output = generateWordsPassword(dictSize, numberOfWords);
+id("app-words-output").value = output.result;
+id("app-words-randomness").innerHTML = output.randomness;
+}
+
+return {
+init : function () {
+id("app-chars-button").addEventListener("click", displayCharsPassword.bind(this));
+listen(id("app-chars-length, app-chars-upper, app-chars-lower, app-chars-digits, app-chars-punctuation"), "change", displayCharsPassword.bind(this));
+displayCharsPassword();
+
+load("/files/common-words.txt", initWords);
+id("app-words-button").addEventListener("click", displayWordsPassword.bind(this));
+listen(id("app-words-large, app-words-small, app-words-length"), "change", displayWordsPassword.bind(this));
+}
+};
+};
+
+App.app = new App.PasswordGenerator();
+App.app.init();
+
+</script>
+
+
+<p class="post-meta">Tags: math, programming</p>
+</article>
+
+<footer class="site-footer">© 2011–2016</footer>
+</div>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>
