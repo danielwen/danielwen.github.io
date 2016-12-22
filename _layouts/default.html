@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+{% include head.html %}
+<body>
+
+<div id="flex-ancestor">
+<div id="site-wrapper">
+{% capture c %}{% include header.html %}{% endcapture %}{{ c | replace:'    ','' }}
+
+<div id="page-content" class="visible">
+<div>
+{{ content | replace:'    ','' }}
+{% include footer.html %}
+</div>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

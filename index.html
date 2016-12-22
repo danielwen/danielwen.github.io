@@ -1,0 +1,14 @@
+---
+layout: default
+---
+<h2 class="post-list-heading">All posts</h1>
+<div class="post-list">{% for post in site.posts %}
+    <article>
+        <a href="{{ post.url }}" class="post-link">
+            <div class="post-list-image" style="background-image: url('/img{{ post.url }}cover.jpg')"></div>
+            <h1 class="post-list-title">{{ post.title }}</h2>
+            <p class="post-description">{{ post.description }}</p>
+            <p class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</p>
+        </a>
+    </article>
+{% endfor %}</div>

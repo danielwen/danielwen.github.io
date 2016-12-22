@@ -1,0 +1,41 @@
+---
+---
+
+$base-font-family: 'Oxygen', sans-serif;
+$base-font-weight: 300;
+$base-font-size: 16px;
+$small-font-size: 14px;
+
+$spacing-unit: 30px;
+
+$text-color: #111;
+$background-color: #fdfdfd;
+$background-alt-color: #e6e6e6;
+$accent-color: #2a7ae2;
+$alt-color: #e1b479;
+$subtle-color: #a9bfdb;
+$grey-color: #828282;
+$grey-color-light: #c9c9c9;
+$grey-color-dark: #505050;
+
+$narrow-bound: 480px;
+$medium-bound: 960px;
+$max-bound: 1160px;
+$height-bound: 600px;
+
+@mixin smaller-than($variable) {
+    @media screen and (max-width: $variable) {
+        @content;
+    }
+}
+@mixin larger-than($variable) {
+    @media screen and (min-width: $variable + 1) {
+        @content;
+    }
+}
+
+@import
+    "base",
+    "layout",
+    "app"
+;

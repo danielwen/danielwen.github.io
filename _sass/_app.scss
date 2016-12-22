@@ -1,0 +1,7 @@
+#app {
+    @extend %margin-bottom-1;
+}
+#app input {
+    font-family: inherit;
+    font-size: inherit;
+}

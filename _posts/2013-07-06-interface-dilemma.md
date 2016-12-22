@@ -1,0 +1,15 @@
+---
+title: The Human Interface Dilemma
+description: Balancing portability and usability in computing devices
+tags: musings
+---
+
+The physical aspect of computer technology has, since its commencement, shrunken to convenient sizes. Parts that once filled entire rooms now fit in the palms of our hands. According to Moore's Law, the density of transistors on a computing chip should double every two years. As practical and welcome these improvements, they interfere with the usability of the devices affected. In fact, the form factor has diminished to the point where it becomes limited by the interface---the means by which a human communicates with the device. 
+
+An interface consists of input, commonly a keyboard, and output, most notably a screen. Currently, that of a desktop computer, with its large keyboard, mouse, and  display remains the most practical. But the computer itself could easily only require a small fraction of the space taken up by the peripherals. For example, on a smartphone, the relatively tiny touchscreen does the job of input and output, and we struggle to type with our thumbs and yearn for a bigger picture. And so appear ridiculous contraptions such as the Samsung Galaxy Note, easier to use, yet unnecessarily cumbersome to carry. Thus, we find ourselves in an interesting dilemma: the smallness of our computing devices is inhibited by our own hands and eyes.
+
+These days, one must often choose between portability and usability. When I last shopped for a laptop, I had in mind something lightweight yet had a spacious screen, and the rarity did not surprise me nor discourage me. It made me think about how to face the outlined problem. With the advent of wearable technology like smartwatches and Google Glass, I wondered how an effective solution could be achieved. Finally, I concluded fancifully that, the sole viable answer that would allow devices to continue to shrink and that would provide an interface even more useable than a full-size keyboard and screen, would be a brain-computer interface.
+
+A brain-computer interface is a concept appearing in science-fiction that consists of implanting circuits into the brain so that it can communicate directly with the computer via the neurons. Users would not need to use their hands to type; instead, they could simply *think* what they wanted to input. As for output, if a computer could be connected to the part of the brain that processes visual information, it could send a signal that the brain would interpret as an image.
+
+As cool as this fantastical idea sounds, my paranoid mind imagines the dystopias that it could lead to: people becoming inhuman due to the omnipresence of technology and connection, then hijacking people's minds through the computer and subsequently enslaving them, and then transferring their own consciousness into a computer and thereby becoming immortal. Not an enviable future. 

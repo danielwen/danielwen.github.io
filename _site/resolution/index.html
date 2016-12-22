@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width initial-scale=1"/>
+<title>Display Resolution Calculator</title>
+<meta name="author" content="Daniel Wen"/>
+<meta name="description" content="A tool to calculate pixel density, physical dimensions, and angular resolution"/>
+<link rel="canonical" href="http://localhost:4000/resolution/"/>
+<link rel="icon" href="/favicon.ico"/>
+<link href="//fonts.googleapis.com/css?family=Oxygen:300" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="/assets/main.css"/>
+<script src="/assets/main.js"></script>
+</head>
+
+<body>
+
+<div id="flex-ancestor">
+<div id="site-wrapper">
+<header id="site-header">
+<div id="site-title">
+<div id="site-logo"></div>
+<a href="/">Lane Widen</a>
+<p>A Permutation of <a href="/about/" class="subtle">Daniel Wen</a></p>
+</div>
+<!--<div id="site-tags">
+<p>Browse by tag</p>
+<ul>
+<li><a href="/tag/design/">design</a></li>
+<li><a href="/tag/programming/">programming</a></li>
+<li><a href="/tag/musings/">musings</a></li>
+<li><a href="/tag/math/">math</a></li>
+</ul>
+</div>-->
+</header>
+
+<div id="page-content" class="visible">
+<div>
+<article class="post-content">
+<header class="post-header">
+<h1 class="post-title">Display Resolution Calculator</h1>
+<h2 class="post-subtitle">A tool to calculate pixel density, physical dimensions, and angular resolution</h2>
+<p class="post-meta"><time datetime='2013-03-30' pubdate>March 30, 2013</time></p>
+</header>
+<p>The first part of this tool calculates pixel density (DPI/PPI or ppcm) and physical dimensions, given the pixel dimensions and diagonal size of the display. The second part uses viewing distance to calculate the Points Per Degree and how well the pixels resolve for an eye with 20/20 visual acuity.</p>
+
+<p>For information on the terminology and the math, scroll down to the “How this works” section.</p>
+
+<style>
+#app input {
+width: 170px;
+text-align: right;
+}
+</style>
+
+<div id="app">
+<table>
+<tr>
+<td><label for="app-xpx">Horizontal pixels</label></td><td><input type="text" id="app-xpx" /></td>
+</tr><tr>
+<td><label for="app-ypx">Vertical pixels</label></td><td><input type="text" id="app-ypx" /></td>
+</tr><tr>
+<td><label for="app-zphy">Diagonal size (inches)</label></td><td><input type="text" id="app-zphy" /></td>
+</tr><tr>
+<td colspan="2">&nbsp;</td>
+</tr><tr>
+<td><label for="app-ar">Aspect ratio</label></td><td><input type="text" readonly="" id="app-ar" /></td>
+</tr><tr>
+<td><label for="app-xphy">Physical width</label></td><td><input type="text" readonly="" id="app-xphy" /></td>
+</tr><tr>
+<td><label for="app-yphy">Physical height</label></td><td><input type="text" readonly="" id="app-yphy" /></td>
+</tr><tr>
+<td><label for="app-rd">Maximum resolve distance</label></td><td><input type="text" readonly="" id="app-rd" /></td>
+</tr><tr>
+<td colspan="2">&nbsp;</td>
+</tr><tr>
+<td><label for="app-pd">Pixel density (specify units)</label></td><td><input type="text" id="app-pd" /></td>
+</tr><tr>
+<td><label for="app-vd">Viewing distance (specify units)</label></td><td><input type="text" id="app-vd" /></td>
+</tr><tr>
+<td colspan="2">&nbsp;</td>
+</tr><tr>
+<td><label for="app-rpd">Maximum resolve pixel density</label></td><td><input type="text" readonly="" id="app-rpd" /></td>
+</tr><tr>
+<td><label for="app-ppd">Pixels per degree</label></td><td><input type="text" readonly="" id="app-ppd" /></td>
+</tr><tr>
+<td><label for="app-sa">Angle subtended by pixel (arcminutes)</label></td><td><input type="text" readonly="" id="app-sa" /></td>
+</tr><tr>
+<td colspan="2">&nbsp;</td>
+</tr><tr>
+<td><label for="app-rq">Perceived quality</label></td><td><input type="text" readonly="" id="app-rq" /></td>
+</tr>
+</table>
+</div>
+
+<script>
+"use strict";
+
+var App = {
+reset : function (elements) {
+for (var i = 0; i < elements.length; i++)
+elements[i].value = "";
+},
+
+arcmin : 1/60*Math.PI/180,
+
+part1 : function () {
+App.reset(id("app-ar, app-xphy, app-yphy, app-rd, app-pd"));
+var xpx = parseInt(id("app-xpx").value);
+var ypx = parseInt(id("app-ypx").value);
+var zphy = parseFloat(id("app-zphy").value);
+if (xpx && ypx && zphy) {
+var ar = xpx/ypx;
+var yphy = Math.sqrt(Math.pow(zphy,2)/(Math.pow(xpx/ypx,2)+1));
+var xphy = yphy*ar;
+var pd = ypx/yphy;
+switch (ar = round(ar, 2)) {
+case 1.25: ar = "5:4"; break;
+case 1.33: ar = "4:3"; break;
+case 1.5: ar = "3:2"; break;
+case 1.6: ar = "16:10"; break;
+case 1.78: ar = "16:9"; break;
+case 2.33: ar = "21:9"; break;
+}
+var rd = 1/pd/2/Math.tan(App.arcmin/2);
+id("app-ar").value = ar;
+id("app-xphy").value = String(round(xphy, 2)) + "in (" + String(round(xphy*2.54, 2)) + "cm)";
+id("app-yphy").value = String(round(yphy, 2)) + "in (" + String(round(yphy*2.54, 2)) + "cm)";
+id("app-rd").value = String(round(rd, 2)) + "in (" + String(round(rd*2.54, 2)) + "cm)";
+id("app-pd").value = String(round(pd, 2)) + "PPI (" + String(round(pd/2.54, 2)) + "ppcm)";
+part2();
+}
+},
+
+parseIn : function (str, b) {
+str = str.replace(/ /g, "").toLowerCase();
+if (b)
+var match = str.match(/^(\d+|\d*\.\d+) ?(?:(in)(?:ch(?:es)?)?|(f)(?:(?:eet|oot)|t)|(c)(?:entimet(?:er|re)s?|m)|(m)(?:et(?:er|re)s?)?)$/);
+else
+var match = str.match(/^(\d+|\d*\.\d+) ?([dp]pi|ppcm)\b/);
+if (match) {
+match = match.slice(1).sort().slice(0,2);
+match[0] = parseFloat(match[0]);
+return match;
+}
+else return false;
+},
+
+part2 : function () {
+App.reset(id("app-rpd, app-ppd, app-sa, app-rq"));
+var pd = parseIn(id("app-pd").value, 0);
+var vd = parseIn(id("app-vd").value, 1);
+if (vd[0]) {
+switch (vd[1]) {
+case "in": vd[0] *= 2.54; break;
+case "f": vd[0] *= 30.48; break;
+case "m": vd[0] *= 100; break;
+}
+var rpd = 1/(vd[0]*Math.tan(App.arcmin/2)*2);
+id("app-rpd").value = String(round(rpd*2.54, 2)) + "PPI (" + String(round(rpd, 2)) + "ppcm)";
+if (pd[0]) {
+if (pd[1][2] == "i")
+pd[0] /= 2.54;
+var ppd = vd[0]*Math.tan(Math.PI/180/2)*2*pd[0];
+id("app-ppd").value = round(ppd, 2);
+var sa = Math.atan(1/pd[0]/2/vd[0])*2/arcmin;
+id("app-sa").value = round(sa, 2);
+var rq = pd[0]*100/rpd;
+id("app-rq").value = String(round(rq, 2)) + "%";
+}
+}
+}
+};
+
+listen(id("app-xpx, app-ypx, app-zphy"), "keyup", App.part1);
+listen(id("app-pd, app-vd"), "keyup", App.part2);
+
+</script>
+
+<script id="loadMath" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML,http://lane-widen.com/assets/mathjax-config.js"></script>
+
+<h1 id="how-this-works">How this works</h1>
+
+<h2 id="part-1-pixel-density">Part 1: Pixel density</h2>
+
+<p>Manufacturers usually only provide the resolution (pixel dimensions) of the display and the diagonal measurement. To calculate pixel density, we need the horizontal or vertical dimensions. We can represent a display with physical side dimensions <var>a</var> and <var>b</var> and diagonal <var>c</var> (see diagram).</p>
+
+<p><img src="/img/resolution/dimensions.jpg" alt="Display dimensions diagram" style="width:200px" /></p>
+
+<p>Let’s say the pixel dimensions are 1024 by 768, so the aspect ratio is 4:3. This is the ratio between <var>a</var> and <var>b</var>, so we can represent <var>b</var> as a fraction of <var>a</var>:</p>
+
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mi>b</mi><mo>=</mo><mfrac><mrow><mn>3</mn></mrow><mrow><mn>4</mn></mrow></mfrac><mi>a</mi></math></p>
+
+<p>We can now use the Pythagorean Theorem to solve for <var>a</var> or <var>b</var>:</p>
+
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><msup><mi>b</mi><mn>2</mn></msup><mo>=</mo><msup><mi>c</mi><mn>2</mn></msup></math></p>
+
+<p>Let’s say the diagonal <var>c</var> is 10 inches. In this case,</p>
+
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><msup><mrow><mo>(</mo><mfrac><mrow><mn>3</mn></mrow><mrow><mn>4</mn></mrow></mfrac><mi>a</mi><mo>)</mo></mrow><mn>2</mn></msup><mo>=</mo><msup><mn>10</mn><mn>2</mn></msup></math></p>
+
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mi>a</mi><mo>=</mo><mn>8</mn></math></p>
+
+<p>Finally, pixel density is equal to one of the pixel dimensions divided by its corresponding physical dimension. In this example, the pixel density would be</p>
+
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mfrac><mrow><mn>1024</mn></mrow><mrow><mi>a</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><mn>1024</mn></mrow><mrow><mn>8</mn></mrow></mfrac><mo>=</mo><mn>128</mn></math></p>
+
+<h2 id="part-2-angular-resolution">Part 2: Angular resolution</h2>
+
+<p>The quality perceived by the eye does not depend solely on pixel density. Viewing distance also needs to be taken into account. The closer you are to the display, the more your eyes will resolve it (distinguish its individual pixels). Thus, a 50-inch, 1080p HDTV can look just as sharp as a much smaller computer monitor of the same resolution, due to the difference in viewing distance.</p>
+
+<p><img src="/img/resolution/trig.jpg" alt="Display trigonometry diagram" style="width:200px" /></p>
+
+<p>This diagram shows the relation between the pixel size and viewing distance affect perceived quality, represented by the subtended angle <var>S</var>. Note that pixel size is the reciprocal of pixel density.</p>
+
+<p>Decreasing angle <var>S</var> improves perceived quality, and this can be done by increasing pixel density or viewing distance. The relation can be expressed using trigonometry as</p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>S</mi><mo>=</mo><mn>2</mn><msup><mi>tan</mi><mrow><mo lspace="verythinmathspace" rspace="0em">&minus;</mo><mn>1</mn></mrow></msup><mrow><mo>(</mo><mfrac><mrow><mi>s</mi></mrow><mrow><mn>2</mn><mi>d</mi></mrow></mfrac><mo>)</mo></mrow></math>
+
+<p>Visual acuity is the measure of the ability of an eye to distinguish detail. The generally-accepted value for normal vision is commonly referred to as “20/20 vision.” This is <a href="http://en.wikipedia.org/wiki/Visual_acuity#Definition" target="_blank">defined</a> as the ability to see something that subtends to an angle of 5 arcminutes (1 arcminute is 1/60 of a degree).</p>
+
+<p>Knowing this, one can calculate useful information involving <var>S</var>, <var>d</var> and <var>s</var>:</p>
+
+<ul>
+  <li>Given pixel density, what is the maximum distance at which the pixels will be just resolved? (Given <var>s</var>, what <var>d</var> makes <var>S</var> equal to 1 arcminute?)</li>
+  <li>Given viewing distance, what is the maximum pixel density the eye can resolve? (Given <var>d</var>, what <var>s</var> makes <var>S</var> equal to 1 arcminute?)</li>
+  <li>Pixels per degree: How many pixels subtend to an angle <var>S</var> of 1 degree (given <var>s</var> and <var>d</var>)</li>
+  <li>At a typical viewing distance, the actual pixel density is what fraction of the maximum resolve pixel density? This is a good measure of perceived quality. At 100%, the pixels are resolved. At a higher percentage, the eye would theoretically not see the difference. At a lower percentage, one should distinguish the individual pixels. Thus, a good display, when viewed from typical distance, should have a perceived quality of 100% or more.</li>
+</ul>
+
+<p class="post-meta">Tags: math</p>
+</article>
+
+<footer class="site-footer">© 2011–2016</footer>
+</div>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

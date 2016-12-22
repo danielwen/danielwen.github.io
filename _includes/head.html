@@ -1,0 +1,28 @@
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width initial-scale=1"/>
+<title>{%
+    if page.title %}{%
+        if page.description
+            %}{{ page.title }}{%
+        else
+            %}{{ page.title }} — {{ site.title }}{%
+        endif %}{%
+    else
+        %}{{ site.title }} — {{ site.description }}{%
+    endif %}</title>
+<meta name="author" content="Daniel Wen"/>
+<meta name="description" content="{%
+    if page.title %}{%
+        if page.description
+            %}{{ page.description }}{%
+        endif %}{%
+    else
+        %}{{ site.description }}{%
+    endif %}"/>
+<link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.url }}"/>
+<link rel="icon" href="/favicon.ico"/>
+<link href="//fonts.googleapis.com/css?family=Oxygen:300" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="/assets/main.css"/>
+<script src="/assets/main.js"></script>
+</head>
