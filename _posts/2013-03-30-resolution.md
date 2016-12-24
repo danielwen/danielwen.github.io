@@ -10,7 +10,7 @@ For information on the terminology and the math, scroll down to the "How this wo
 
 {% include src/resolution.html %}
 
-<script id="loadMath" src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML,http://lane-widen.com/assets/mathjax-config.js'></script>
+<script id="loadMath" src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML,//lane-widen.com/assets/mathjax-config.js'></script>
 
 # How this works
 

@@ -6,4 +6,4 @@ MathJax.Hub.Config({
         }
     }
 });
-MathJax.Ajax.loadComplete("http://lane-widen.com/assets/mathjax-config.js");
+MathJax.Ajax.loadComplete("//lane-widen.com/assets/mathjax-config.js");
