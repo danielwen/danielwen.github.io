@@ -8,4 +8,4 @@ tags: design programming
 
 The theme we devised was "1920's casino." The website earned second place for website design and second place for online journalism. 
 
-Visit the site here: <http://lowercanadacasino.lane-widen.com/>.
+Visit the site here: <http://lowercanadacasino.lane-widen.com/en/>.

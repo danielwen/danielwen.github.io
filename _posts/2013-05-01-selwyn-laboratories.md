@@ -10,4 +10,4 @@ This is a website I created for my school, to participate in the website compone
 
 ![Tile flip screenshot](/img/selwyn-laboratories/screenshot2.jpg){:style="max-width:450px"}
 
-Visit the site here: <http://selwynlaboratories.lane-widen.com>.
+Visit the site here: <http://selwynlaboratories.lane-widen.com/en/>.
