@@ -1,6 +1,8 @@
 (function() {
   "use strict";
-  var Matrix, Rotate, Vector, gyroToMatrix, matrixToAxisAngle;
+  var Matrix, RotationMatrix, Vector, gyroToMatrix, main, matrixToAxisAngle,
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
   Vector = (function() {
     Vector.empty = function(n) {
@@ -163,24 +165,28 @@
 
   })();
 
-  Rotate = (function() {
-    function Rotate() {}
+  RotationMatrix = (function(superClass) {
+    extend(RotationMatrix, superClass);
 
-    Rotate.x = function(angle) {
-      return new Matrix([[1, 0, 0], [0, Math.cos(angle), -Math.sin(angle)], [0, Math.sin(angle), Math.cos(angle)]]);
-    };
+    function RotationMatrix(axis, angle) {
+      switch (axis) {
+        case 0:
+          RotationMatrix.__super__.constructor.call(this, [[1, 0, 0], [0, Math.cos(angle), -Math.sin(angle)], [0, Math.sin(angle), Math.cos(angle)]]);
+          break;
+        case 1:
+          RotationMatrix.__super__.constructor.call(this, [[Math.cos(angle), 0, Math.sin(angle)], [0, 1, 0], [-Math.sin(angle), 0, Math.cos(angle)]]);
+          break;
+        case 2:
+          RotationMatrix.__super__.constructor.call(this, [[Math.cos(angle), -Math.sin(angle), 0], [Math.sin(angle), Math.cos(angle), 0], [0, 0, 1]]);
+          break;
+        default:
+          throw "Invalid axis";
+      }
+    }
 
-    Rotate.y = function(angle) {
-      return new Matrix([[Math.cos(angle), 0, Math.sin(angle)], [0, 1, 0], [-Math.sin(angle), 0, Math.cos(angle)]]);
-    };
+    return RotationMatrix;
 
-    Rotate.z = function(angle) {
-      return new Matrix([[Math.cos(angle), -Math.sin(angle), 0], [Math.sin(angle), Math.cos(angle), 0], [0, 0, 1]]);
-    };
-
-    return Rotate;
-
-  })();
+  })(Matrix);
 
   matrixToAxisAngle = function(matrix) {
     var X, X2, angle, axis, cross, diff1, diff2, x;
@@ -196,14 +202,31 @@
   };
 
   gyroToMatrix = function(rotations) {
-    var angle, axis, j, len, matrix, ref, rotation;
+    var angle, axis, j, len, matrix, rotation;
     matrix = Matrix.identity(3);
-    for (j = 0, len = rotations.length; j < len; j++) {
-      ref = rotations[j], axis = ref[0], angle = ref[1];
-      rotation = Rotate[axis](angle);
+    for (axis = j = 0, len = rotations.length; j < len; axis = ++j) {
+      angle = rotations[axis];
+      rotation = new RotationMatrix(axis, angle);
       matrix = matrix.multiply(rotation);
     }
     return matrix;
   };
+
+  main = function() {
+    var angle, axis, prec, ref, ref1, scale, x, y, z;
+    scale = id("app-deg").checked ? 180 / Math.PI : 1;
+    x = strToFinite(id("app-x").value);
+    y = strToFinite(id("app-y").value);
+    z = strToFinite(id("app-z").value);
+    if (!Number.isNaN(x) && !Number.isNaN(y) && !Number.isNaN(z)) {
+      prec = 3;
+      ref = matrixToAxisAngle(gyroToMatrix([x / scale, y / scale, z / scale])), axis = ref[0], angle = ref[1];
+      ref1 = axis.values, x = ref1[0], y = ref1[1], z = ref1[2];
+      id("app-axis").value = "(" + (round(x, prec)) + ", " + (round(y, prec)) + ", " + (round(z, prec)) + ")";
+      return id("app-angle").value = String(round(scale * angle, prec));
+    }
+  };
+
+  listen(id("app-rad, app-deg, app-x, app-y, app-z"), "change", main.bind(this));
 
 }).call(this);

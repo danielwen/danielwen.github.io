@@ -88,24 +88,28 @@ class Matrix
                 result.values[row][col] = rowVector.dot(colVector)
         result
 
-class Rotate
-    @x: (angle) ->
-        new Matrix([[1, 0, 0]
-                    [0, Math.cos(angle), -Math.sin(angle)]
-                    [0, Math.sin(angle), Math.cos(angle)]])
+class RotationMatrix extends Matrix
+    constructor: (axis, angle) ->
+        switch axis
+            when 0
+                super [[1, 0, 0]
+                       [0, Math.cos(angle), -Math.sin(angle)]
+                       [0, Math.sin(angle), Math.cos(angle)]]
 
-    @y: (angle) ->
-        new Matrix([[Math.cos(angle), 0, Math.sin(angle)]
-                    [0, 1, 0]
-                    [-Math.sin(angle), 0, Math.cos(angle)]])
+            when 1
+                super [[Math.cos(angle), 0, Math.sin(angle)]
+                       [0, 1, 0]
+                       [-Math.sin(angle), 0, Math.cos(angle)]]
 
-    @z: (angle) ->
-        new Matrix([[Math.cos(angle), -Math.sin(angle), 0]
-                    [Math.sin(angle), Math.cos(angle), 0]
-                    [0, 0, 1]])
+            when 2
+                super [[Math.cos(angle), -Math.sin(angle), 0]
+                       [Math.sin(angle), Math.cos(angle), 0]
+                       [0, 0, 1]]
+            
+            else throw "Invalid axis"
 
 matrixToAxisAngle = (matrix) ->
-    x = new Vector([1, 0, 0])
+    x = new Vector [1, 0, 0]
     X = matrix.col(0)
     X2 = matrix.multiply(matrix).col(0)
     diff1 = X.subtract(x)
@@ -117,7 +121,21 @@ matrixToAxisAngle = (matrix) ->
 
 gyroToMatrix = (rotations) ->
     matrix = Matrix.identity(3)
-    for [axis, angle] in rotations
-        rotation = Rotate[axis](angle)
+    for angle, axis in rotations
+        rotation = new RotationMatrix(axis, angle)
         matrix = matrix.multiply(rotation)
     matrix
+
+main = () ->
+    scale = if id("app-deg").checked then 180/Math.PI else 1
+    x = strToFinite(id("app-x").value)
+    y = strToFinite(id("app-y").value)
+    z = strToFinite(id("app-z").value)
+    if (!Number.isNaN(x) and !Number.isNaN(y) and !Number.isNaN(z))
+        prec = 3
+        [axis, angle] = matrixToAxisAngle(gyroToMatrix([x/scale, y/scale, z/scale]))
+        [x, y, z] = axis.values
+        id("app-axis").value = "(#{ round(x, prec) }, #{ round(y, prec) }, #{ round(z, prec) })"
+        id("app-angle").value = String(round((scale * angle), prec))
+
+listen(id("app-rad, app-deg, app-x, app-y, app-z"), "change", main.bind(this))

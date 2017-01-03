@@ -234,15 +234,11 @@ li {
   border-radius: 3px;
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
-  transition: opacity 0.5s; }
+  background-repeat: no-repeat; }
   @media screen and (max-width: 380px) {
     .post-list-image {
       margin-left: -30px;
       margin-right: -30px; } }
-  @media screen and (min-width: 961px) {
-    .post-list-image {
-      opacity: 0.9; } }
 
 .post-link {
   color: inherit;
@@ -251,8 +247,6 @@ li {
     transition: color 0.5s; }
   .post-link:hover {
     color: inherit; }
-    .post-link:hover > .post-list-image {
-      opacity: 1; }
     .post-link:hover > h1 {
       color: #e1b479; }
 

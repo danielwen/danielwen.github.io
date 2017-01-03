@@ -1,7 +1,11 @@
 "use strict";
 
-function isInt(x) {
-    return (!isNaN(x) && typeof(x) === "number" && parseInt(x) === x);
+function strToFinite(s) {
+    if (!Number.isNaN(parseFloat(s))) {
+        var n = Number(s);
+        if (Number.isFinite(n)) return n;
+    }
+    return NaN;
 }
 
 function round(n, decimals) {

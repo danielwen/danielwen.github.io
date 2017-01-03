@@ -121,13 +121,9 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    transition: opacity 0.5s;
     @include smaller-than(380px) {
         margin-left: -$spacing-unit;
         margin-right: -$spacing-unit;
-    }
-    @include larger-than($medium-bound) {
-        opacity: 0.9;
     }
 }
 
@@ -145,9 +141,6 @@
     }
     &:hover {
         color: inherit;
-        > .post-list-image {
-            opacity: 1;
-        }
         > h1 {
             color: $alt-color;
         }

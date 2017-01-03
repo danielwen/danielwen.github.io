@@ -1,6 +1,30 @@
-<script src="/assets/rotation.js"></script>
-
 <div id="app">
-<input id="app-input" type="text"/>
-<input id="app-output" type="text" readonly/>
+<table><tr>
+    <td>Units</td>
+    <td><input id="app-rad" type="radio" name="app-units" checked/>
+        <label for="app-rad">Radians</label>
+    </td>
+</tr><tr>
+    <td>&nbsp;</td>
+    <td><input id="app-deg" type="radio" name="app-units"/>
+        <label for="app-deg">Degrees</label>
+    </td>
+</tr><tr>
+<td colspan="2">Rotation amount on each axis (gyroscopic):</td>
+</tr><tr>
+<td><label for="app-x">x</label></td><td><input type="text" id="app-x"/></td>
+</tr><tr>
+<td><label for="app-y">y</label></td><td><input type="text" id="app-y"/></td>
+</tr><tr>
+<td><label for="app-z">z</label></td><td><input type="text" id="app-z"/></td>
+</tr><tr>
+<td colspan="2">Result in axis-angle representation:</td>
+</tr><tr>
+<td><label for="app-axis">Axis (unit vector)</label></td><td><input type="text" readonly id="app-axis"/></td>
+</tr><tr>
+<td><label for="app-angle">Angle</label></td><td><input type="text" readonly id="app-angle"/></td>
+</tr>
+</table>
 </div>
+
+<script src="/assets/rotation.js"></script>

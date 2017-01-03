@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width initial-scale=1"/>
+<title>Axis-angle rotation</title>
+<meta name="author" content="Daniel Wen"/>
+<meta name="description" content="Convert xyz gyroscope rotation to axis-angle representation"/>
+<link rel="canonical" href="https://lane-widen.com/rotation/"/>
+<link rel="icon" href="/favicon.ico"/>
+<link href="//fonts.googleapis.com/css?family=Oxygen:300" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="/assets/main.css"/>
+<script src="/assets/main.js"></script>
+</head>
+
+<body>
+
+<div id="flex-ancestor">
+<div id="site-wrapper">
+<header id="site-header">
+<div id="site-title">
+<div id="site-logo"></div>
+<a href="/">Lane Widen</a>
+<p>A Permutation of <a href="/about/" class="subtle">Daniel Wen</a></p>
+</div>
+<!--<div id="site-tags">
+<p>Browse by tag</p>
+<ul>
+<li><a href="/tag/design/">design</a></li>
+<li><a href="/tag/programming/">programming</a></li>
+<li><a href="/tag/musings/">musings</a></li>
+<li><a href="/tag/math/">math</a></li>
+</ul>
+</div>-->
+</header>
+
+<div id="page-content" class="visible">
+<div>
+<article class="post-content">
+<header class="post-header">
+<h1 class="post-title">Axis-angle rotation</h1>
+<h2 class="post-subtitle">Convert xyz gyroscope rotation to axis-angle representation</h2>
+<p class="post-meta"><time datetime='2016-01-18' pubdate>January 18, 2016</time></p>
+</header>
+<p>This tool converts a sequence of rotations about <em>x</em>, <em>y</em> and <em>z</em> axes into a single rotation about an axis vector. This is useful for finding the <code class="highlighter-rouge">rotate3d</code> transformation function in CSS given <code class="highlighter-rouge">rotateX</code>, <code class="highlighter-rouge">rotateY</code> and <code class="highlighter-rouge">rotateZ</code>.</p>
+
+<div id="app">
+<table><tr>
+<td>Units</td>
+<td><input id="app-rad" type="radio" name="app-units" checked="" />
+<label for="app-rad">Radians</label>
+</td>
+</tr><tr>
+<td>&nbsp;</td>
+<td><input id="app-deg" type="radio" name="app-units" />
+<label for="app-deg">Degrees</label>
+</td>
+</tr><tr>
+<td colspan="2">Rotation amount on each axis (gyroscopic):</td>
+</tr><tr>
+<td><label for="app-x">x</label></td><td><input type="text" id="app-x" /></td>
+</tr><tr>
+<td><label for="app-y">y</label></td><td><input type="text" id="app-y" /></td>
+</tr><tr>
+<td><label for="app-z">z</label></td><td><input type="text" id="app-z" /></td>
+</tr><tr>
+<td colspan="2">Result in axis-angle representation:</td>
+</tr><tr>
+<td><label for="app-axis">Axis (unit vector)</label></td><td><input type="text" readonly="" id="app-axis" /></td>
+</tr><tr>
+<td><label for="app-angle">Angle</label></td><td><input type="text" readonly="" id="app-angle" /></td>
+</tr>
+</table>
+</div>
+
+<script src="/assets/rotation.js"></script>
+
+
+<p class="post-meta">Tags: math, programming</p>
+</article>
+
+<footer class="site-footer">© 2011–2016</footer>
+</div>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>
