@@ -94,22 +94,25 @@ text-align: right;
 </div>
 
 <script>
+
+(function () {
+
 "use strict";
 
-var App = {
-reset : function (elements) {
+var arcmin = 1/60*Math.PI/180;
+
+function reset(elements) {
 for (var i = 0; i < elements.length; i++)
 elements[i].value = "";
-},
+}
 
-arcmin : 1/60*Math.PI/180,
-
-part1 : function () {
-App.reset(id("app-ar, app-xphy, app-yphy, app-rd, app-pd"));
-var xpx = parseInt(id("app-xpx").value);
-var ypx = parseInt(id("app-ypx").value);
-var zphy = parseFloat(id("app-zphy").value);
-if (xpx && ypx && zphy) {
+function part1() {
+reset(id("app-ar, app-xphy, app-yphy, app-rd, app-pd"));
+var xpx = strToFinite(id("app-xpx").value);
+var ypx = strToFinite(id("app-ypx").value);
+var zphy = strToFinite(id("app-zphy").value);
+if (!Number.isNaN(xpx) && !Number.isNaN(ypx) && !Number.isNaN(zphy) &&
+xpx > 0 && ypx > 0 && zphy > 0) {
 var ar = xpx/ypx;
 var yphy = Math.sqrt(Math.pow(zphy,2)/(Math.pow(xpx/ypx,2)+1));
 var xphy = yphy*ar;
@@ -122,7 +125,7 @@ case 1.6: ar = "16:10"; break;
 case 1.78: ar = "16:9"; break;
 case 2.33: ar = "21:9"; break;
 }
-var rd = 1/pd/2/Math.tan(App.arcmin/2);
+var rd = 1/pd/2/Math.tan(arcmin/2);
 id("app-ar").value = ar;
 id("app-xphy").value = String(round(xphy, 2)) + "in (" + String(round(xphy*2.54, 2)) + "cm)";
 id("app-yphy").value = String(round(yphy, 2)) + "in (" + String(round(yphy*2.54, 2)) + "cm)";
@@ -130,9 +133,9 @@ id("app-rd").value = String(round(rd, 2)) + "in (" + String(round(rd*2.54, 2)) +
 id("app-pd").value = String(round(pd, 2)) + "PPI (" + String(round(pd/2.54, 2)) + "ppcm)";
 part2();
 }
-},
+}
 
-parseIn : function (str, b) {
+function parseIn(str, b) {
 str = str.replace(/ /g, "").toLowerCase();
 if (b)
 var match = str.match(/^(\d+|\d*\.\d+) ?(?:(in)(?:ch(?:es)?)?|(f)(?:(?:eet|oot)|t)|(c)(?:entimet(?:er|re)s?|m)|(m)(?:et(?:er|re)s?)?)$/);
@@ -140,25 +143,25 @@ else
 var match = str.match(/^(\d+|\d*\.\d+) ?([dp]pi|ppcm)\b/);
 if (match) {
 match = match.slice(1).sort().slice(0,2);
-match[0] = parseFloat(match[0]);
+match[0] = strToFinite(match[0]);
 return match;
 }
 else return false;
-},
+}
 
-part2 : function () {
-App.reset(id("app-rpd, app-ppd, app-sa, app-rq"));
-var pd = parseIn(id("app-pd").value, 0);
-var vd = parseIn(id("app-vd").value, 1);
-if (vd[0]) {
+function part2() {
+reset(id("app-rpd, app-ppd, app-sa, app-rq"));
+var pd = parseIn(id("app-pd").value, false);
+var vd = parseIn(id("app-vd").value, true);
+if (!Number.isNaN(vd[0]) && vd[0] > 0) {
 switch (vd[1]) {
 case "in": vd[0] *= 2.54; break;
 case "f": vd[0] *= 30.48; break;
 case "m": vd[0] *= 100; break;
 }
-var rpd = 1/(vd[0]*Math.tan(App.arcmin/2)*2);
+var rpd = 1/(vd[0]*Math.tan(arcmin/2)*2);
 id("app-rpd").value = String(round(rpd*2.54, 2)) + "PPI (" + String(round(rpd, 2)) + "ppcm)";
-if (pd[0]) {
+if (!Number.isNaN(pd[0]) && pd[0] > 0) {
 if (pd[1][2] == "i")
 pd[0] /= 2.54;
 var ppd = vd[0]*Math.tan(Math.PI/180/2)*2*pd[0];
@@ -170,10 +173,11 @@ id("app-rq").value = String(round(rq, 2)) + "%";
 }
 }
 }
-};
 
-listen(id("app-xpx, app-ypx, app-zphy"), "keyup", App.part1);
-listen(id("app-pd, app-vd"), "keyup", App.part2);
+listen(id("app-xpx, app-ypx, app-zphy"), "keyup", part1);
+listen(id("app-pd, app-vd"), "keyup", part2);
+
+}).call(this);
 
 </script>
 
