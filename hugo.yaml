@@ -1,3 +1,17 @@
-baseURL: https://example.org/
+baseURL: https://danielwen.com/
 languageCode: en-us
-title: My New Hugo Site
+title: Daniel Wen
+theme: PaperMod
+params:
+  defaultTheme: auto
+  disableThemeToggle: true
+
+  homeInfoParams:
+    Title: Hi, I'm Daniel.
+    Content: I'm a software engineer with a background in machine learning. Since the start of 2023, I've been learning about, donating to, and working on projects in AI Safety.
+
+  socialIcons:
+    - name: "linkedin"
+      url: "https://www.linkedin.com/in/daniel-wen/"
+    - name: "github"
+      url: "https://github.com/danielwen"
