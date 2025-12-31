@@ -2,6 +2,7 @@ baseURL: https://danielwen.com/
 languageCode: en-us
 title: Daniel Wen
 theme: PaperMod
+enableEmoji: true
 params:
   defaultTheme: auto
   disableThemeToggle: true

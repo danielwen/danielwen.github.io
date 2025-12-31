@@ -1,0 +1,7 @@
+<!--
+Source - https://stackoverflow.com/a/72056237
+Posted by I'M YourOnly.One, modified by community. See post 'Timeline' for change history
+Retrieved 2025-12-31, License - CC BY-SA 4.0
+-->
+
+<a href="{{ .Destination | safeURL }}"{{ with .Title}} title="{{ . }}"{{ end }}{{ if strings.HasPrefix .Destination  "http" }} target="_blank" rel="noopener"{{ end }}>{{ .Text | safeHTML }}</a>
