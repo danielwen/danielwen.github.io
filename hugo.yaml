@@ -6,10 +6,11 @@ enableEmoji: true
 params:
   defaultTheme: auto
   disableThemeToggle: true
+  showReadingTime: true
 
   homeInfoParams:
     Title: Hi, I'm Daniel.
-    Content: I'm a software engineer with a background in machine learning. Since the start of 2023, I've been learning about, donating to, and working on projects in AI Safety.
+    Content: I'm a software engineer with a background in machine learning. Since 2023, I've been learning about, donating to, and working on projects in AI Safety.
 
   socialIcons:
     - name: "linkedin"

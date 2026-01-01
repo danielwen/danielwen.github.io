@@ -1,12 +1,9 @@
 ---
-date: '2025-12-22T22:39:14-05:00'
-draft: false
+date: '2025-12-22'
 title: '2025 Philanthropy Update'
+description: &description "This post explains my high-level donation strategy, and who I donate to. I also share what I've donated so far."
+summary: *description
 ---
-
-This post explains my high-level donation strategy, and who I donate to. I also share what I've donated so far.
-
-<!--more-->
 
 ## Overall strategy
 
@@ -52,9 +49,9 @@ From this comparison, it would seem that AI safety has the greatest potential im
 
 Lastly, I’d like to share what I've donated so far:
 
-**Lifetime impact, nominal**: $13,792
+**Lifetime impact, nominal**[^1]: $13,792
 
-| Year | Total impact\* | Top recipients |
+| Year | Total impact[^1] | Top recipients |
 |---|---|---|
 | 2025 | $2,204 | GiveWell Top Charities Fund, Lightcone Infrastructure, Center for AI Safety, Model Evaluation and Threat Research, Long Term Future Fund, Centre for the Governance of AI |
 | 2024 | $2,460 | GiveWell Top Charities Fund, Lifespan Research Institution, Machine Intelligence Research Institute, Berkeley Existential Risk Initiative |
@@ -63,4 +60,4 @@ Lastly, I’d like to share what I've donated so far:
 | 2021 | $3,310 | Gavi Alliance, International Rescue Committee, GiveWell Maximum Impact Fund, GiveDirectly, Boys and Girls Clubs of Canada, Doctors Without Borders, Room to Read |
 | 2020 | $1,858 | Beyond 12 Education, Room to Read, Boys and Girls Clubs of Canada, Doctors Without Borders, GiveDirectly, International Rescue Committee, Wikimedia Foundation |
 
-\* Includes matching donations from my employer
+[^1]: Includes matching donations from my employer
