@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Talkative Probes | Daniel Wen</title>
+<meta name="keywords" content="">
+<meta name="description" content="We fine-tuned an LLM to answer questions about its own hidden state. This work was done during the training phase of Neel Nanda&#39;s mechanistic interpretability MATS stream.">
+<meta name="author" content="">
+<link rel="canonical" href="https://danielwen.com/posts/talkative-probes/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2acce28c349207be58eb63a348f21a5e2c71005c98b4468dd9734cff3ef0f988.css" integrity="sha256-KszijDSSB75Y62OjSPIaXixxAFyYtEaN2XNM/z7w&#43;Yg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://danielwen.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://danielwen.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://danielwen.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://danielwen.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://danielwen.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://danielwen.com/posts/talkative-probes/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="https://danielwen.com/posts/talkative-probes/">
+  <meta property="og:site_name" content="Daniel Wen">
+  <meta property="og:title" content="Talkative Probes">
+  <meta property="og:description" content="We fine-tuned an LLM to answer questions about its own hidden state. This work was done during the training phase of Neel Nanda&#39;s mechanistic interpretability MATS stream.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-11-02T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-11-02T00:00:00+00:00">
+    <meta property="og:image" content="https://danielwen.com/images/talkative-probes-diagram.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://danielwen.com/images/talkative-probes-diagram.png">
+<meta name="twitter:title" content="Talkative Probes">
+<meta name="twitter:description" content="We fine-tuned an LLM to answer questions about its own hidden state. This work was done during the training phase of Neel Nanda&#39;s mechanistic interpretability MATS stream.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://danielwen.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Talkative Probes",
+      "item": "https://danielwen.com/posts/talkative-probes/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Talkative Probes",
+  "name": "Talkative Probes",
+  "description": "We fine-tuned an LLM to answer questions about its own hidden state. This work was done during the training phase of Neel Nanda's mechanistic interpretability MATS stream.",
+  "keywords": [
+    
+  ],
+  "articleBody": "Full report Link to report Motivation Interpretability methods aim to understand the inner workings of Deep Neural Networks by examining the inner representations (latents). Researchers dedicate a significant amount of time designing experiments to check for the presence of certain concepts in a latent.\nThis project asks: Is it possible to finetune a language model to serve as an interpreter that will examine the latents of a DNN and verbalize the encoded information in natural language? Implicit in this question is the hope that a fine-tuned interpreter LM would generalize in out-of-distribution settings, so that it could be useful even in settings without ground truth labels.\nIf the initial experiments are successful, we can further extend the finetuning so that we can ask the interpreter LM followup questions about a specific latent — turning the interpreter LM into a talkative and interactive probe. We believe that even moderate success in this will be of help to interpretability researchers as it can significantly reduce the hypothesis space they need to examine.\nSummary We utilize datasets from 9 different language modeling tasks (see dataset section). We do leave-one-out testing by fine-tuning on 8 of these tasks and check if the interpreter generalizes to the left out task that wasn’t in the training mix. A positive result here would have been exciting as it would indicate something like an instruction tuning phenomena. However, our results here were mostly negative. We find that although the interpreter LM achieves good performance on the in-distribution validation set, it couldn’t do better than the random baseline on the out-of-distribution left-out task. We discuss alternate setups and design choices that may help in improving the results in our discussion section.\n",
+  "wordCount" : "282",
+  "inLanguage": "en",
+  "image":"https://danielwen.com/images/talkative-probes-diagram.png","datePublished": "2024-11-02T00:00:00Z",
+  "dateModified": "2024-11-02T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://danielwen.com/posts/talkative-probes/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Daniel Wen",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://danielwen.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://danielwen.com/" accesskey="h" title="Daniel Wen (Alt + H)">Daniel Wen</a>
+            <div class="logo-switches">
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Talkative Probes
+    </h1>
+    <div class="post-description">
+      We fine-tuned an LLM to answer questions about its own hidden state. This work was done during the training phase of Neel Nanda&#39;s mechanistic interpretability MATS stream.
+    </div>
+    <div class="post-meta"><span title='2024-11-02 00:00:00 +0000 UTC'>November 2, 2024</span>&nbsp;·&nbsp;<span>2 min read</span>
+
+</div>
+  </header> 
+<figure class="entry-cover">
+            <img loading="eager"
+                srcset='https://danielwen.com/images/talkative-probes-diagram_hu_f60aa18359990160.png 360w,https://danielwen.com/images/talkative-probes-diagram_hu_40d0913bf634a068.png 480w,https://danielwen.com/images/talkative-probes-diagram_hu_a65fe560b87cd0c3.png 720w,https://danielwen.com/images/talkative-probes-diagram_hu_b9e8ec791d965daf.png 1080w,https://danielwen.com/images/talkative-probes-diagram.png 1310w'
+                src="https://danielwen.com/images/talkative-probes-diagram.png"
+                sizes="(min-width: 768px) 720px, 100vw"
+                width="1310" height="867"
+                alt="">
+        
+</figure>
+  <div class="post-content"><h2 id="full-report">Full report<a hidden class="anchor" aria-hidden="true" href="#full-report">#</a></h2>
+<p>
+
+<a href="https://docs.google.com/document/d/1Axw7wZFzprQTQUuo5Fq__5CxLLEs7G9RrNrMnXybj2E/edit?tab=t.a7ws69t7mdu7#heading=h.40glp8oj7iq4" target="_blank" rel="noopener">Link to report</a>
+</p>
+<h2 id="motivation">Motivation<a hidden class="anchor" aria-hidden="true" href="#motivation">#</a></h2>
+<p>Interpretability methods aim to understand the inner workings of Deep Neural Networks by examining the inner representations (latents). Researchers dedicate a significant amount of time designing experiments to check for the presence of certain concepts in a latent.</p>
+<p>This project asks: Is it possible to finetune a language model to serve as an interpreter that will examine the latents of a DNN and verbalize the encoded information in natural language? Implicit in this question is the hope that a fine-tuned interpreter LM would generalize in out-of-distribution settings, so that it could be useful even in settings without ground truth labels.</p>
+<p>If the initial experiments are successful, we can further extend the finetuning so that we can ask the interpreter LM followup questions about a specific latent — turning the interpreter LM into a talkative and interactive probe. We believe that even moderate success in this will be of help to interpretability researchers as it can significantly reduce the hypothesis space they need to examine.</p>
+<h2 id="summary">Summary<a hidden class="anchor" aria-hidden="true" href="#summary">#</a></h2>
+<p>We utilize datasets from 9 different language modeling tasks (see dataset section). We do leave-one-out testing by fine-tuning on 8 of these tasks and check if the interpreter generalizes to the left out task that wasn’t in the training mix. A positive result here would have been exciting as it would indicate something like an instruction tuning phenomena. However, our results here were mostly negative. We find that although the interpreter LM achieves good performance on the in-distribution validation set, it couldn’t do better than the random baseline on the out-of-distribution left-out task. We discuss alternate setups and design choices that may help in improving the results in our discussion section.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://danielwen.com/">Daniel Wen</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+</body>
+
+</html>

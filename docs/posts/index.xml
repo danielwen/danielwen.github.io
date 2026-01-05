@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Posts on Daniel Wen</title>
+    <link>https://danielwen.com/posts/</link>
+    <description>Recent content in Posts on Daniel Wen</description>
+    <generator>Hugo -- 0.153.1</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 22 Dec 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://danielwen.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2025 Philanthropy Update</title>
+      <link>https://danielwen.com/posts/2025-philanthropy-update/</link>
+      <pubDate>Mon, 22 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>https://danielwen.com/posts/2025-philanthropy-update/</guid>
+      <description>This post explains my high-level donation strategy, and who I donate to. I also share what I&amp;#39;ve donated so far.</description>
+    </item>
+    <item>
+      <title>Talkative Probes</title>
+      <link>https://danielwen.com/posts/talkative-probes/</link>
+      <pubDate>Sat, 02 Nov 2024 00:00:00 +0000</pubDate>
+      <guid>https://danielwen.com/posts/talkative-probes/</guid>
+      <description>We fine-tuned an LLM to answer questions about its own hidden state. This work was done during the training phase of Neel Nanda&amp;#39;s mechanistic interpretability MATS stream.</description>
+    </item>
+    <item>
+      <title>Searching for Memory Management Neurons in Transformers</title>
+      <link>https://danielwen.com/posts/memory-management-neurons/</link>
+      <pubDate>Fri, 30 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>https://danielwen.com/posts/memory-management-neurons/</guid>
+      <description>I search for neurons in a Transformer model that delete information from the residual stream. This work was part of my application to Neel Nanda&amp;#39;s mechanistic interpretability MATS stream.</description>
+    </item>
+  </channel>
+</rss>
