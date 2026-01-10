@@ -13,6 +13,11 @@ params:
     Title: Hi, I'm Daniel.
     Content: I'm a software engineer with a background in machine learning. Since 2023, I've been learning about, donating to, and working on projects in AI Safety.
 
+  label:
+    icon: logo.png
+    text: " "
+    iconHeight: 32
+
   socialIcons:
     - name: "linkedin"
       url: "https://www.linkedin.com/in/daniel-wen/"
