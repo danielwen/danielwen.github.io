@@ -23,3 +23,15 @@ params:
       url: "https://www.linkedin.com/in/daniel-wen/"
     - name: "github"
       url: "https://github.com/danielwen"
+markup:
+  goldmark:
+    extensions:
+      passthrough:
+        delimiters:
+          block:
+          - - $$
+            - $$
+          inline:
+          - - '\('
+            - '\)'
+        enable: true

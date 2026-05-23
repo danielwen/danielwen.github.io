@@ -6,8 +6,15 @@
     <description>Recent content on Daniel Wen</description>
     <generator>Hugo -- 0.153.1</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 22 Dec 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 20 May 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://danielwen.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Bayesian Analysis of METR Data</title>
+      <link>https://danielwen.com/posts/metr-bayesian-analysis/</link>
+      <pubDate>Wed, 20 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://danielwen.com/posts/metr-bayesian-analysis/</guid>
+      <description>I re-analyze METR&amp;#39;s data on LLM capabilities using a Bayesian approach. My best model predicts a task doubling time of 190 days.</description>
+    </item>
     <item>
       <title>2025 Philanthropy Update</title>
       <link>https://danielwen.com/posts/2025-philanthropy-update/</link>
