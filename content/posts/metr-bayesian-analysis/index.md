@@ -191,7 +191,8 @@ I find that the best model (in terms of ELPD score, which penalizes model comple
 
 ## Code
 
-[GitHub repo](https://github.com/danielwen/metr-bayesian)
+ * [Colab notebook](https://colab.research.google.com/github/danielwen/metr-bayesian/blob/main/metr_bayesian.ipynb)
+ * [GitHub repo](https://github.com/danielwen/metr-bayesian)
 
 [^1]: Kwa, Thomas, Ben West, Joel Becker, et al. (2025, March). *Measuring AI Ability to Complete Long Tasks*. [METR](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/).
 [^2]: Moss, Jonas. (2026, February 13). *METR's data can't distinguish between trajectories*. [LessWrong](https://www.lesswrong.com/posts/sBEzomgnYJmYHki9T/metr-s-data-can-t-distinguish-between-trajectories-and-80).
